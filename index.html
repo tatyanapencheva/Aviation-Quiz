@@ -2,173 +2,40 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviation Quiz</title>
+  <title>Quiz Menu</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <h1>Aviation Quiz</h1>
+  <h1>Избери предмет</h1>
 </header>
 
 <main>
   <div class="card">
 
-    <p id="progress"></p>
-    <p id="score"></p>
-
-    <p id="question">Зареждане…</p>
-
-    <button id="showBtn" class="show" onclick="showAnswer()">
-      Покажи отговор
+    <button onclick="startQuiz('Aviation Law', 'data/aviation-law.json')">
+      Aviation Law
     </button>
 
-    <p id="answer"></p>
+    <button onclick="startQuiz('Flight Safety', 'data/aviation-safety.json')">
+      Flight Safety
+    </button>
 
-    <div class="actions">
-      <button id="knowBtn" class="know" onclick="markKnown(true)">Знам</button>
-      <button id="dontKnowBtn" class="dontknow" onclick="markKnown(false)">Не знам</button>
-    </div>
-
-    <div id="endButtons" class="end" style="display:none;">
-      <button onclick="repeatGroup()">Повтори тази група</button>
-      <button onclick="nextGroup()">Следваща група</button>
-    </div>
-
-    <ul id="wrongList"></ul>
+    <button onclick="startQuiz('Meteorology', 'data/aviation-meteorology.json')">
+      Meteorology
+    </button>
 
   </div>
 </main>
 
 <script>
-let allQuestions = [];
-let currentGroupQuestions = [];
-let group = 0;
-let index = 0;
-let wrong = [];
-let correct = 0;
+function startQuiz(title, file) {
+  const params = new URLSearchParams();
+  params.set("title", title);
+  params.set("file", file);
 
-const GROUP_SIZE = 50;
-let TOTAL_GROUPS = 0;
-
-fetch("questions.json")
-  .then(r => r.json())
-  .then(data => {
-    allQuestions = data;
-    TOTAL_GROUPS = Math.ceil(allQuestions.length / GROUP_SIZE);
-    loadGroup();
-  });
-
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-function loadGroup() {
-  const start = group * GROUP_SIZE;
-  const end = start + GROUP_SIZE;
-
-  currentGroupQuestions = shuffle(
-    allQuestions.slice(start, end)
-  );
-
-  index = 0;
-  wrong = [];
-  correct = 0;
-
-  document.getElementById("endButtons").style.display = "none";
-  document.getElementById("wrongList").innerHTML = "";
-
-  showControls();
-  loadQuestion();
-}
-
-function loadQuestion() {
-  if (index >= currentGroupQuestions.length) {
-    finishGroup();
-    return;
-  }
-
-  const q = currentGroupQuestions[index];
-
-  document.getElementById("progress").textContent =
-    `Част ${group + 1} от ${TOTAL_GROUPS} – Въпрос ${index + 1} от ${currentGroupQuestions.length}`;
-
-  document.getElementById("score").textContent =
-    `Верни: ${correct} / ${currentGroupQuestions.length}`;
-
-  document.getElementById("question").textContent = q.question;
-  document.getElementById("answer").textContent = q.answer;
-  document.getElementById("answer").style.display = "none";
-}
-
-function showAnswer() {
-  document.getElementById("answer").style.display = "block";
-}
-
-function markKnown(known) {
-  if (known) {
-    correct++;
-  } else {
-    wrong.push(currentGroupQuestions[index]);
-  }
-  index++;
-  loadQuestion();
-}
-
-function finishGroup() {
-  document.getElementById("progress").textContent = "";
-  document.getElementById("question").textContent =
-    `Край на част ${group + 1} ✔️`;
-
-  document.getElementById("score").textContent =
-    `Резултат: ${correct} / ${currentGroupQuestions.length}`;
-
-  hideControls();
-  document.getElementById("endButtons").style.display = "flex";
-
-  const list = document.getElementById("wrongList");
-  list.innerHTML = "";
-
-  if (wrong.length === 0) {
-    list.innerHTML = "<li>🎉 Няма грешни въпроси!</li>";
-  } else {
-    wrong.forEach(q => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${q.question}</strong><br>${q.answer}`;
-      list.appendChild(li);
-    });
-  }
-}
-
-function repeatGroup() {
-  loadGroup();
-}
-
-function nextGroup() {
-  if (group < TOTAL_GROUPS - 1) {
-    group++;
-    loadGroup();
-  } else {
-    document.getElementById("question").textContent =
-      "🎉 Готово! Всички въпроси са минати.";
-    document.getElementById("score").textContent = "";
-    document.getElementById("endButtons").style.display = "none";
-    document.getElementById("wrongList").innerHTML = "";
-  }
-}
-
-function hideControls() {
-  document.getElementById("showBtn").style.display = "none";
-  document.getElementById("knowBtn").style.display = "none";
-  document.getElementById("dontKnowBtn").style.display = "none";
-  document.getElementById("answer").style.display = "none";
-}
-
-function showControls() {
-  document.getElementById("showBtn").style.display = "inline-block";
-  document.getElementById("knowBtn").style.display = "inline-block";
-  document.getElementById("dontKnowBtn").style.display = "inline-block";
+  window.location.href = `quiz.html?${params.toString()}`;
 }
 </script>
 
