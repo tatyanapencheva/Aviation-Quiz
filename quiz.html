@@ -20,9 +20,7 @@
 
     <p id="question">Зареждане…</p>
 
-    <button id="showBtn" class="show" onclick="showAnswer()">
-      Покажи отговор
-    </button>
+    <button id="showBtn" class="show" onclick="showAnswer()">Покажи отговор</button>
 
     <p id="answer"></p>
 
@@ -32,8 +30,9 @@
     </div>
 
     <div id="endButtons" class="end" style="display:none;">
-      <button onclick="repeatGroup()">Повтори групата</button>
-      <button onclick="goToMenu()">Към менюто</button>
+      <button onclick="repeatGroup()">🔁 Повтори групата</button>
+      <button onclick="nextGroup()">▶️ Следваща група</button>
+      <button onclick="goToMenu()">🏠 Към менюто</button>
     </div>
 
     <ul id="wrongList"></ul>
@@ -45,35 +44,33 @@
 let allQuestions = [];
 let currentGroupQuestions = [];
 let index = 0;
-let wrong = [];
 let correct = 0;
+let wrong = [];
+
+let groupIndex = 0;
 
 const GROUP_SIZE = 50;
 
-// ✅ ВЗИМАМЕ ДАННИТЕ ОТ localStorage
+// 🔹 Данни от менюто
 const title = localStorage.getItem("quizTitle");
 const file = localStorage.getItem("quizFile");
 
 document.getElementById("quizTitle").textContent = title || "Quiz";
 
-// ❌ ако някой отвори quiz.html директно
 if (!file) {
   document.getElementById("question").textContent =
-    "❌ Няма избран предмет. Върни се в менюто.";
+    "❌ Няма избран предмет.";
   hideControls();
 } else {
   fetch(file)
-    .then(r => {
-      if (!r.ok) throw new Error("Fetch error");
-      return r.json();
-    })
+    .then(r => r.json())
     .then(data => {
-      allQuestions = shuffle(data);
+      allQuestions = data;
       loadGroup();
     })
     .catch(() => {
       document.getElementById("question").textContent =
-        "❌ Неуспешно зареждане на въпросите.";
+        "❌ Грешка при зареждане на въпросите.";
       hideControls();
     });
 }
@@ -83,10 +80,16 @@ function shuffle(arr) {
 }
 
 function loadGroup() {
-  currentGroupQuestions = allQuestions.slice(0, GROUP_SIZE);
+  const start = groupIndex * GROUP_SIZE;
+  const end = start + GROUP_SIZE;
+
+  currentGroupQuestions = shuffle(
+    allQuestions.slice(start, end)
+  );
+
   index = 0;
-  wrong = [];
   correct = 0;
+  wrong = [];
 
   document.getElementById("endButtons").style.display = "none";
   document.getElementById("wrongList").innerHTML = "";
@@ -104,7 +107,7 @@ function loadQuestion() {
   const q = currentGroupQuestions[index];
 
   document.getElementById("progress").textContent =
-    `Въпрос ${index + 1} от ${currentGroupQuestions.length}`;
+    `Група ${groupIndex + 1} | Въпрос ${index + 1} от ${currentGroupQuestions.length}`;
 
   document.getElementById("score").textContent =
     `Верни: ${correct}`;
@@ -127,7 +130,9 @@ function markKnown(known) {
 }
 
 function finishGroup() {
-  document.getElementById("question").textContent = "Край ✔️";
+  document.getElementById("question").textContent =
+    `Край на група ${groupIndex + 1} ✔️`;
+
   document.getElementById("score").textContent =
     `Резултат: ${correct} / ${currentGroupQuestions.length}`;
 
@@ -137,19 +142,29 @@ function finishGroup() {
   const list = document.getElementById("wrongList");
   list.innerHTML = "";
 
-  if (wrong.length === 0) {
-    list.innerHTML = "<li>🎉 Няма грешни въпроси!</li>";
-  } else {
-    wrong.forEach(q => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${q.question}</strong><br>${q.answer}`;
-      list.appendChild(li);
-    });
-  }
+  wrong.forEach(q => {
+    const li = document.createElement("li");
+    li.innerHTML = `<strong>${q.question}</strong><br>${q.answer}`;
+    list.appendChild(li);
+  });
 }
 
 function repeatGroup() {
   loadGroup();
+}
+
+function nextGroup() {
+  const totalGroups = Math.ceil(allQuestions.length / GROUP_SIZE);
+
+  if (groupIndex < totalGroups - 1) {
+    groupIndex++;
+    loadGroup();
+  } else {
+    document.getElementById("question").textContent =
+      "🎉 Всички групи са завършени!";
+    document.getElementById("endButtons").style.display = "none";
+    document.getElementById("wrongList").innerHTML = "";
+  }
 }
 
 function goToMenu() {
