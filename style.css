@@ -15,7 +15,7 @@ body {
 
 header {
   width: 100%;
-  padding: 20px;
+  padding: 24px;
   text-align: center;
 }
 
@@ -28,12 +28,42 @@ main {
 
 .card {
   background: #0f5a6f;
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 20px;
+  padding: 28px;
   width: 100%;
-  max-width: 500px; /* КЛЮЧОВО */
+  max-width: 500px;
   text-align: center;
 }
+
+/* ===== MENU ===== */
+
+.menu-title {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-btn {
+  background: white;
+  color: #003c4a;
+  font-size: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  background: #ffd400;
+}
+
+/* ===== QUIZ ===== */
 
 #progress,
 #score {
@@ -114,7 +144,7 @@ button {
   border-radius: 8px;
 }
 
-/* 📱 TELEFON */
+/* 📱 Mobile */
 @media (max-width: 600px) {
   #question {
     font-size: 18px;
@@ -125,7 +155,8 @@ button {
   }
 
   .actions,
-  .end {
+  .end,
+  .menu {
     flex-direction: column;
   }
 }
