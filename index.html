@@ -2,6 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Menu</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,16 +15,12 @@
 <main>
   <div class="card">
 
-    <button onclick="startQuiz('Aviation Law', 'data/aviation-law.json')">
-      Aviation Law
+    <button onclick="startQuiz('Авиационно законодателство', 'data/aviation-law.json')">
+      Авиационно законодателство
     </button>
 
-    <button onclick="startQuiz('Flight Safety', 'data/aviation-safety.json')">
-      Flight Safety
-    </button>
-
-    <button onclick="startQuiz('Meteorology', 'data/aviation-meteorology.json')">
-      Meteorology
+    <button onclick="startQuiz('Микропроцесорна техника', 'data/microprocessor.json')">
+      Микропроцесорна техника
     </button>
 
   </div>
@@ -35,7 +32,7 @@ function startQuiz(title, file) {
   params.set("title", title);
   params.set("file", file);
 
-  window.location.href = `quiz.html?${params.toString()}`;
+  window.location.href = "quiz.html?" + params.toString();
 }
 </script>
 
