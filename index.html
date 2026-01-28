@@ -15,24 +15,28 @@
 <main>
   <div class="card">
 
-    <button onclick="startQuiz('Авиационно законодателство', 'data/aviation-law.json')">
-      Авиационно законодателство
-    </button>
+    <h2 class="menu-title">📚 Предмети</h2>
 
-    <button onclick="startQuiz('Микропроцесорна техника', 'data/microprocessor.json')">
-      Микропроцесорна техника
-    </button>
+    <div class="menu">
+      <button class="menu-btn"
+        onclick="startQuiz('Авиационно законодателство', 'data/aviation-law.json')">
+        ✈️ Авиационно законодателство
+      </button>
+
+      <button class="menu-btn"
+        onclick="startQuiz('Микропроцесорна техника', 'data/microprocessor.json')">
+        💻 Микропроцесорна техника
+      </button>
+    </div>
 
   </div>
 </main>
 
 <script>
-function startQuiz(title, file) {
-  const params = new URLSearchParams();
-  params.set("title", title);
-  params.set("file", file);
-
-  window.location.href = "quiz.html?" + params.toString();
+function startQuiz(title, jsonFile) {
+  localStorage.setItem("quizTitle", title);
+  localStorage.setItem("quizFile", jsonFile);
+  window.location.href = "quiz.html";
 }
 </script>
 
